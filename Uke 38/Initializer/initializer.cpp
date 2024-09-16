@@ -41,10 +41,10 @@ void initializer::Create()
 	Wall4.AddCollider(Wall4.GetScale(), ECollisionType::Boxes);
 
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		RollingBall kule;
-		kule.CreateSphere(glm::vec3(0.25f),4.f, glm::vec3(15.f, 0.75f, 5.f + i), glm::vec3(10.f),Color::Gold);
+		kule.CreateSphere(glm::vec3(0.25f),4.f, glm::vec3(15.f, 0.75f, 5.f + i), glm::vec3(20000.f),Color::Gold);
 		Balls.push_back(kule);
 		Balls.back().AddCollider(kule.GetScale(), ECollisionType::ball);
 	}
@@ -54,7 +54,6 @@ void initializer::Create()
 	Meshes.emplace_back(&Wall2);
 	Meshes.emplace_back(&Wall3);
 	Meshes.emplace_back(&Wall4);
-	Balls.emplace_back(Sphere);
 
 }
 
