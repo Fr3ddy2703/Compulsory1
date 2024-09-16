@@ -61,7 +61,7 @@ void Mesh::CreateCube(glm::vec3 size, glm::vec3 pos, glm::vec3 color)
     BindBuffer();
 }
 
-void RollingBall::CreateSphere(glm::vec3 size, float segment, glm::vec3 pos, glm::vec3 color)
+void RollingBall::CreateSphere(glm::vec3 size, float segment, glm::vec3 pos, glm::vec3 velocity, glm::vec3 color)
 {
     GetScale() = size;
     GetPosition() = pos;
@@ -104,14 +104,13 @@ void RollingBall::CreateSphere(glm::vec3 size, float segment, glm::vec3 pos, glm
 
 void Mesh::AddCollider(glm::vec3 scale, ECollisionType collisionType, glm::vec3 offset)
 {
-    	Collider = std::make_unique<Collision>(GetPosition()+offset, scale, offset, collisionType);
+    	Collider = Collision(GetPosition()+offset, scale, offset, collisionType);
 }
 
 void RollingBall::SubDivide(int index1, int index2, int index3, int n)
 {
 	if (n > 0)
 	{
-
 		glm::vec3 v1 = bVertices[index1].position + bVertices[index2].position;
 		v1 = glm::normalize(v1);
         glm::vec3 v2 = bVertices[index1].position + bVertices[index3].position;
@@ -187,9 +186,15 @@ void RollingBall::DrawSphere()
     glBindVertexArray(0);
 }
 
+void RollingBall::UpdatePos(float dt)
+{
+	position += velocity * dt;
+	Collider.UpdatePosition(position);
+}
+
 void RollingBall::AddCollider(glm::vec3 scale, ECollisionType collisionType, glm::vec3 offset)
 {
-	Collider = std::make_unique<Collision>(GetPosition()+offset, scale, offset, collisionType);
+	Collider = Collision(GetPosition()+offset, scale, offset, collisionType);
 }
 
 

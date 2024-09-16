@@ -1,5 +1,4 @@
 #pragma once
-#include "../Mesh/Mesh.h"
 #define PrintBool(x) std::cout << ((x) ? "True" : "False") << "\n"
 
 class RollingBall;
@@ -14,11 +13,13 @@ enum class ECollisionType
 class Collision
 {
 public:
-    glm::vec3 min;
-    glm::vec3 max;
+    glm::vec3 min = glm::vec3(0);
+    glm::vec3 max= glm::vec3(0);
     glm::vec3 scale;
     glm::vec3 offset;
     ECollisionType collisionType;
+
+	Collision() = default;
     
     Collision(glm::vec3 position, glm::vec3 scale, glm::vec3 offset = glm::vec3(0.f),ECollisionType collision_type = ECollisionType::Boxes);
     void UpdatePosition(glm::vec3 position);

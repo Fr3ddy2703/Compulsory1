@@ -40,21 +40,21 @@ void initializer::Create()
 	Wall4.CreateCube(glm::vec3(1.f, 1.f, -9.f), glm::vec3(19.f, 0.f, 0.f),Color::Brown);
 	Wall4.AddCollider(Wall4.GetScale(), ECollisionType::Boxes);
 
-	for (int i = 0; i < 1; i++)
+
+	for (int i = 0; i < 10; i++)
 	{
-		RollingBall* ball = new RollingBall();
-		ball->CreateSphere(glm::vec3(0.25f, 0.25f, 0.25f),4.f, glm::vec3(15.f, 0.75f, 5.f + i), Color::Gold);
-		ball->AddCollider(ball->GetScale(), ECollisionType::ball);
-		Balls.emplace_back(ball);
+		RollingBall kule;
+		kule.CreateSphere(glm::vec3(0.25f),4.f, glm::vec3(15.f, 0.75f, 5.f + i), glm::vec3(10.f),Color::Gold);
+		Balls.push_back(kule);
+		Balls.back().AddCollider(kule.GetScale(), ECollisionType::ball);
 	}
-	
 
 	Meshes.emplace_back(&Floor);
 	Meshes.emplace_back(&Wall);
 	Meshes.emplace_back(&Wall2);
 	Meshes.emplace_back(&Wall3);
 	Meshes.emplace_back(&Wall4);
-	Balls.emplace_back(&Sphere);
+	Balls.emplace_back(Sphere);
 
 }
 
@@ -77,7 +77,6 @@ void initializer::Run()
 		KeyBoardInput::processInput(window);
 		Update(DeltaTime);
 
-		glEnable(GL_DEPTH);
 		glUniformMatrix4fv(UseCamera.projectionLoc, 1, GL_FALSE, glm::value_ptr(UseCamera.getProjection(window::width, window::height)));
 		glUniformMatrix4fv(UseCamera.viewLoc, 1, GL_FALSE, glm::value_ptr(UseCamera.getView()));
 		glUniform3fv(glGetUniformLocation(Shader::ShaderProgram, "viewPos"), 1, glm::value_ptr(UseCamera.cameraPos));
@@ -87,7 +86,7 @@ void initializer::Run()
 		}
 		for (auto sphere : Balls)
 		{
-			sphere->DrawSphere();
+			sphere.DrawSphere();
 		}
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -97,7 +96,13 @@ void initializer::Run()
 
 void initializer::Update(float deltaTime)
 {
-	//Collision::checkCollision();
+	//Collision::checkBallBallCollision(Balls* );
+	//Collision::checkBallBoxCollision(ECollisionType::ball, Meshes* Wall);
+	for (auto ball : Balls)
+	{
+		ball.UpdatePos(deltaTime);
+	}
+	glEnable(GL_DEPTH_TEST);
 }
 
 initializer::~initializer()

@@ -5,7 +5,6 @@
 class ElementBuffer;
 class VertexBuffer;
 struct GLFWwindow;
-//std::vector<Mesh*> kuler; 
 
 class initializer
 {
@@ -31,7 +30,7 @@ public:
 
 private:
 	std::vector<Mesh*> Meshes; 
-	std::vector<RollingBall*> Balls; 
+	std::vector<RollingBall> Balls; 
 
 };
 

@@ -36,24 +36,22 @@ bool Collision::checkBallBoxCollision(RollingBall* ball, Mesh* wall)
 
 bool Collision::checkBallBallCollision(RollingBall* ball1, RollingBall* ball2)
 {
+
+
 	float totalr = glm::length(ball1->GetPosition() + ball2->GetPosition());
 	float d = totalr - (ball1->GetScale().x + ball2->GetScale().x);
 	if (totalr <= d)
 	{
      if (HasOverlapped)
 	    {
-			std::cout << "Collision detected" << std::endl; 
+			std::cout << "Collision detected" << std::endl;
+			auto P0 = ball1->position - ball1->velocity;
+     		auto Q0 =  ball2->position - ball2->velocity;
+			auto A = P0 - Q0;
+			auto B = ball1->position - ball2->position;
+			float AB = glm::dot(A, B);
 	    }
 		return true;
 	}
    
-}
-
-void Collision::DetectCollision(RollingBall b1, RollingBall b2)
-{
-    auto P0 = b1.position - b1.velocity;
-    auto Q0 =  b2.position - b2.velocity;
-    auto A = P0 - Q0;
-    auto B = b1.position - b2.position;
-    float AB = glm::dot(A, B);
 }
