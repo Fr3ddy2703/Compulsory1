@@ -38,25 +38,24 @@ void initializer::Create()
 	Wall4.CreateCube(glm::vec3(1.f, 1.f, -9.f), glm::vec3(19.f, 0.f, 0.f),Color::Brown);
 	Wall4.AddCollider(Wall4.GetScale(), ECollisionType::Boxes);
 
-	Sphere.CreateSphere(glm::vec3(1.f),4.f, glm::vec3(10.f, 10.f, 0.f), 1.f,glm::vec3(1.f, 0.f, 0.f),Color::Gold);
+	RollingBall Sphere;
+	Sphere.CreateSphere(glm::vec3(0.25f),4.f, glm::vec3(15.25f, 0.75f, 2.5f), 1.f,glm::vec3(0.f, 0.f, 0.f),Color::Gold);
 	Sphere.AddCollider(Sphere.GetScale(), ECollisionType::ball);
 
 	/* Creating the balls */
-	//for (int i = 0; i < 1; i++)
-	//{
-		RollingBall kule;
-		kule.CreateSphere(glm::vec3(1.f),4.f, glm::vec3(20.f, 10.f, 0.f), 0.5f,glm::vec3(-1.f, 0.f, 0.f),Color::Gold);
-		kule.AddCollider(kule.GetScale(), ECollisionType::ball);
-		Balls.push_back(kule);
-	//	
-	//}
+	RollingBall kule;
+	kule.CreateSphere(glm::vec3(0.25f),4.f, glm::vec3(15.f, 0.75f, 7.5f), 1.f,glm::vec3(0.f, 0.f, 0.f),Color::Gold);
+	kule.AddCollider(kule.GetScale(), ECollisionType::ball);
+
+	Balls.push_back(kule);
+
 
 	Meshes.emplace_back(Floor);
 	Meshes.emplace_back(Wall);
 	Meshes.emplace_back(Wall2);
 	Meshes.emplace_back(Wall3);
 	Meshes.emplace_back(Wall4);
-	Balls.emplace_back(Sphere);
+	Balls.push_back(Sphere);
 
 }
 
@@ -69,6 +68,11 @@ void initializer::Run()
 	glEnable(GL_DEPTH_TEST);
 	while (!glfwWindowShouldClose(window))
 	{
+		if (glfwGetKey(window, GLFW_KEY_E ) && start == false)
+		{
+			Balls[0].velocity = glm::vec3(0.0f, 0.0f, 1.0f);
+			start = true;
+		}
 		const auto CurrentFrame = static_cast<float>(glfwGetTime());
 		DeltaTime = CurrentFrame - FirstFrame;
 		FirstFrame = CurrentFrame;
@@ -90,7 +94,6 @@ void initializer::Run()
 		for (auto& sphere : Balls)
 		{
 			sphere.DrawSphere();
-			//std::cout << "Sphere position: " << sphere.GetPosition().x << " " << sphere.GetPosition().y << " " << sphere.GetPosition().z << std::endl;
 		}
 	
 		glfwSwapBuffers(window);
@@ -101,26 +104,30 @@ void initializer::Run()
 
 void initializer::Update(float deltaTime)
 {
-    for (auto& ball : Balls)
-    {
         Collision collision;
-    	ball.UpdatePos(deltaTime);
-		Sphere.UpdatePos(deltaTime);
-		 //if (
-			// collision.checkBallBoxCollision(ball, Wall, ECollisionType::ball, ECollisionType::Boxes) ||
-   //         collision.checkBallBoxCollision(ball, Wall2, ECollisionType::ball, ECollisionType::Boxes) ||
-   //         collision.checkBallBoxCollision(ball, Wall3, ECollisionType::ball, ECollisionType::Boxes) ||
-   //         collision.checkBallBoxCollision(ball, Wall4, ECollisionType::ball, ECollisionType::Boxes))
-   //     {
-			// ball.velocity = -ball.velocity;
-		
-   //     }
-        if(collision.checkBallBallCollision(Sphere, ball, ECollisionType::ball))
+
+	for (auto& mball : Balls)
+	{
+		if (
+		   collision.checkBallBoxCollision(mball, Wall, ECollisionType::ball, ECollisionType::Boxes) ||
+		  collision.checkBallBoxCollision(mball, Wall2, ECollisionType::ball, ECollisionType::Boxes) ||
+		  collision.checkBallBoxCollision(mball, Wall3, ECollisionType::ball, ECollisionType::Boxes) ||
+		  collision.checkBallBoxCollision(mball, Wall4, ECollisionType::ball, ECollisionType::Boxes))
 		{
-			//std::cout << "Ball ball collision detected" << std::endl;
-        }
-    
-    }
+			mball.velocity = -mball.velocity;
+		}
+		
+	}
+	for (auto& mball : Balls)
+	{
+
+		if(collision.checkBallBallCollision(Balls[0], Balls[1], ECollisionType::ball))
+		{
+			
+		}
+		Balls[0].UpdatePos(deltaTime);
+		Balls[1].UpdatePos(deltaTime);
+	}
 	
 }
 

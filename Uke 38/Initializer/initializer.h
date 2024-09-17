@@ -12,7 +12,6 @@ public:
 	GLFWwindow *window;
 	static camera UseCamera;
 	static float DeltaTime;
-	RollingBall Sphere;
 	Mesh Floor;
 	Mesh Wall;
 	Mesh Wall2;
@@ -27,10 +26,12 @@ public:
 	virtual void Update(float deltaTime);
 
 	virtual  ~initializer();
+	std::vector<RollingBall> Balls;
+	bool start = false;
 
 private:
 	std::vector<Mesh> Meshes; 
-	std::vector<RollingBall> Balls; 
+
 
 };
 
