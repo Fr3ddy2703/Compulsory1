@@ -20,38 +20,43 @@ void Collision::UpdatePosition(glm::vec3 position)
     max.z = position.z - scale.z;
 }
 
-bool Collision::checkBallBoxCollision(RollingBall* ball, Mesh* wall)
+bool Collision::checkBallBoxCollision(RollingBall ball, Mesh wall, ECollisionType ballType, ECollisionType wallType)
 {
-	if(wall->position.x < ball->position.x + ball->size.x && ball->position.x - ball->size.x < wall->position.x + wall->size.x 
-        && wall->position.y < ball->position.y + ball->size.y && ball->position.y - ball->size.y < wall->position.y + wall->size.y &&
-        wall->position.z < ball->position.z + ball->size.z && ball->position.z - ball->size.z < wall->position.z + wall->size.z)
+    if (ballType == ECollisionType::ball && wallType == ECollisionType::Boxes)
     {
-	    if (HasOverlapped)
-	    {
-			std::cout << "Collision detected" << std::endl; 
-	    }
-	return true;
-	}
+        if (((wall.position.x <= ball.position.x + ball.size.x) && 
+             (wall.position.x >= ball.position.x - ball.size.x)) ||
+            ((wall.position.z - wall.size.z <= ball.position.z + ball.size.z) && 
+             (wall.position.z >= ball.position.z - ball.size.z)))
+        {
+            //std::cout << "Collision detected" << "\n"; 
+            return true; 
+        }
+    }
+    return false;
 }
 
-bool Collision::checkBallBallCollision(RollingBall* ball1, RollingBall* ball2)
+bool Collision::checkBallBallCollision(RollingBall& ball1, RollingBall& ball2, ECollisionType type)
 {
-
-
-	float totalr = glm::length(ball1->GetPosition() + ball2->GetPosition());
-	float d = totalr - (ball1->GetScale().x + ball2->GetScale().x);
-	if (totalr <= d)
+	float totalr = std::sqrtf(std::powf(ball1.position.x - ball2.position.x, 2.f) +  std::powf(ball1.position.y - ball2.position.y, 2.f) + std::powf(ball1.position.z + ball2.position.z, 2.f));
+	float d = (ball1.GetScale().x + ball2.GetScale().x);
+    glm::vec3 ClampedNormal = glm::vec3(0.f);
+	if (type == ECollisionType::ball)
 	{
-     if (HasOverlapped)
-	    {
+		if(totalr > d)
+            return false;
 			std::cout << "Collision detected" << std::endl;
-			auto P0 = ball1->position - ball1->velocity;
-     		auto Q0 =  ball2->position - ball2->velocity;
-			auto A = P0 - Q0;
-			auto B = ball1->position - ball2->position;
-			float AB = glm::dot(A, B);
-	    }
-		return true;
+		auto P0 = ball1.position;
+        auto Q0 = ball2.position;
+		ClampedNormal = P0 - Q0;
+		ball1.velocity = ball1.velocity - (2 * ball2.m) / (ball1.m + ball2.m) * glm::dot(ball1.velocity - ball2.velocity, ClampedNormal) /( glm::distance(P0, Q0) * glm::distance(P0, Q0)) * ClampedNormal;
+		ball2.velocity = ball2.velocity - (2 * ball1.m) / (ball1.m + ball2.m) * glm::dot(ball2.velocity - ball1.velocity, Q0 - P0) /( glm::distance(Q0, P0) * glm::distance(Q0, P0)) * (Q0-P0);
+			return true;
 	}
-   
+	return false;
+}
+
+void Collision::ballphysics(RollingBall& b1, RollingBall& b2)
+{
+ 
 }

@@ -61,11 +61,12 @@ void Mesh::CreateCube(glm::vec3 size, glm::vec3 pos, glm::vec3 color)
     BindBuffer();
 }
 
-void RollingBall::CreateSphere(glm::vec3 size, float segment, glm::vec3 pos, glm::vec3 speed, glm::vec3 color)
+void RollingBall::CreateSphere(glm::vec3 size, float segment, glm::vec3 pos, float mass,glm::vec3 speed, glm::vec3 color)
 {
     GetScale() = size;
     GetPosition() = pos;
 	velocity = speed;
+    m = mass;
 
     Vertex v0 {glm::vec3(0.f, 0.f, 1.f), color};
     Vertex v1 {glm::vec3(1.f, 0.f, 0.f), color};
@@ -190,7 +191,7 @@ void RollingBall::DrawSphere()
 void RollingBall::UpdatePos(float dt)
 {
 	position += velocity * dt;
-	/*Collider.UpdatePosition(position);*/
+	Collider.UpdatePosition(position);
 }
 
 void RollingBall::AddCollider(glm::vec3 scale, ECollisionType collisionType, glm::vec3 offset)

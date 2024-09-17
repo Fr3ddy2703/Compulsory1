@@ -29,7 +29,7 @@ public:
 	virtual  ~initializer();
 
 private:
-	std::vector<Mesh*> Meshes; 
+	std::vector<Mesh> Meshes; 
 	std::vector<RollingBall> Balls; 
 
 };
